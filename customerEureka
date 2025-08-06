@@ -1,0 +1,114 @@
+Monolithic applications are tightly coupled, which can become difficult to maintain, scale, or deploy. 
+To overcome these limitations, the Monocart system was divided into modular microservices:
+
+Customer Service – manages customer information
+
+Product Service – handles product catalog
+
+(Optional later) Order Service – manages purchases
+
+Each service is independently deployable and discoverable via Eureka Server.
+
+Microservices Breakdown
+
+1. Customer Service
+
+Responsibilities:
+
+Create, update, delete, and retrieve customer details.
+
+Uses a MySQL database (customerdb).
+
+Key Components:
+
+Customer.java (Entity)
+
+CustomerDTO.java (Data Transfer Object)
+
+CustomerController.java (API Layer)
+
+CustomerService & Impl
+
+Registered with Eureka as customer-service
+
+2. Product Service
+
+Responsibilities:
+
+Create, update, delete, and retrieve product details.
+
+Search by name or category.
+
+Uses a MySQL database (productdb).
+
+Key Components:
+
+Product.java (Entity)
+
+ProductDTO.java (Data Transfer Object)
+
+ProductController.java (API Layer)
+
+ProductService & Impl
+
+Registered with Eureka as product-service
+
+Eureka Service Discovery
+
+Eureka acts as the service registry.
+
+Eureka Server (eserver)
+
+Runs on port 8761
+
+Provides a dashboard to monitor services
+
+Integration with Customer/Product Services
+
+Each service includes spring-cloud-starter-netflix-eureka-client
+
+Configured with:
+
+spring.application.name=customer-service  # or product-service
+server.port=8081                          # or 8082
+
+# Eureka Config
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+
+Annotated main class with @EnableDiscoveryClient
+
+🔗 Connecting Services to Eureka
+
+1. Add Dependencies in pom.xml
+
+2. Configure application.properties
+
+spring.application.name=customer-service
+server.port=8081
+
+# Eureka Client Config
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka
+
+3. Annotate Main Class
+
+@SpringBootApplication
+@EnableDiscoveryClient
+public class CustomerServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(CustomerServiceApplication.class, args);
+    }
+}
+
+Repeat similar setup for ProductServiceApplication.
+
+✅ Result
+
+Once all services are running:
+
+Open http://localhost:8761
+
+You’ll see:
+
+CUSTOMER-SERVICE → UP
+
+PRODUCT-SERVICE → UP
